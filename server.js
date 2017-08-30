@@ -9,24 +9,25 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 // const conString = 'postgres://drkrieger1:GRiffin368@localhost:5432/kilovolt';
 // const conString = 'postgres://USERNAME:PASSWORD@HOST:PORT';
-// const conString = 'postgres://localhost:5432/kilovolt'; // DONE: Don't forget to set your own conString
+const conString = process.env.DATABASE_URL || 'postgres://localhost:5432'; // DONE: Don't forget to set your own conString
 
-// const client = new pg.Client(conString);
-// client.connect();
+const client = new pg.Client(conString);
+client.connect();
 
 //___________________ heroku postgres
-pg.defaults.ssl = true;
-pg.connect(process.env.DATABASE_URL, function(err, client) {
-  if (err) throw err;
-  console.log('Connected to postgres! Getting schemas...');
+// pg.defaults.ssl = true;
+// pg.connect(process.env.DATABASE_URL, function(err, client) {
+//   if (err) throw err;
+//   console.log('Connected to postgres! Getting schemas...');
+//
+//   client
+//     .query('SELECT table_schema,table_name FROM information_schema.tables;')
+//     .on('row', function(row) {
+//       console.log(JSON.stringify(row));
+//     });
+// });
+// //____________________________heroku postgres
 
-  client
-    .query('SELECT table_schema,table_name FROM information_schema.tables;')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
-});
-//____________________________heroku postgres
 client.on('error', err => console.error(err));
 
 app.use(bodyParser.json());
